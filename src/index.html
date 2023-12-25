@@ -1,51 +1,47 @@
-<!DOCTYPE html>
-<html>
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>Linkedin Search App</title>
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-  <body>
+<body>
     <div class="main w-full h-screen gradient">
-      <div class="header flex justify-between">
-          <div class="logo ml-2 mt-4">
-              <img class="w-8 h-8 cursor-pointer" src="../img/174857.png" alt="logo">
-          </div>
-          <div class="links flex mt-4">
-              <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/facebook.png" alt="facebook" id="facebook">
-              <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/instagram.png" alt="instagram" id="instagram">
-              <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/twitter.png" alt="twitter" id="twitter">
-              <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/linkedin.png" alt="linkedin" id="linkedin">
-              <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/youtube.png" alt="youtube" id="youtube">
-          </div>
-      </div>
-      <div class="section w-full h-5/6 m-auto flex items-center justify-center">
-          <form class="max-w-xs flex items-center flex-col">
-              <h2 class="mb-3 text-white text-4xl">Get Data From<br>"Linkedin"</h2>
-              <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Username" type="text" name="username">
-              <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Password" type="password" name="password" id="">
-              <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Search" type="text" name="username">
-              <select class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" name="" id="">
-                  <option value="tout">Tout</option>
-                  <option value="personnes">Personnes</option>
-                  <option value="emplois">Emplois</option>
-                  <option value="entreprises">Entreprises</option>
-                  <option value="produits">Produits</option>
-                  <option value="groupes">Groupes</option>
-                  <option value="services">Services</option>
-                  <option value="evenements">Événements</option>
-                  <option value="cours">Cours</option>
-                  <option value="ecoles">Écoles</option>
-              </select>
-              <input class="w-full py-2 px-3 mt-2 bg-[#0077B7] text-white text-sm font-semibold rounded-md shadow focus:outline-none cursor-pointer" type="button" value="Run">
-          </form>
-          
-      </div>
-      <div class="footer text-white w-full absolute bottom-0">
-          <p class="text-center pb-2">Created by KhAiMed, Copyright 2023</p>
-      </div>
-  </div>
-  <script src="preload.js"></script>
-  </body>
-</html>
+        <div class="header flex justify-between">
+            <div class="logo ml-2 mt-4">
+                <img class="w-8 h-8 cursor-pointer" src="../img/174857.png" alt="logo">
+            </div>
+            <div class="links flex mt-4">
+                <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/facebook.png" alt="facebook" id="facebook_button">
+                <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/instagram.png" alt="instagram" id="instagram_button">
+                <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/twitter.png" alt="twitter" id="twitter_button">
+                <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/linkedin.png" alt="linkedin" id="linkedin_button">
+                <img class="w-8 h-8 mr-2 invert cursor-pointer" src="../img/social_media/youtube.png" alt="youtube" id="youtube_button">
+            </div>
+        </div>
+        <div class="section w-full h-5/6 m-auto flex items-center justify-center">
+            <form class="max-w-xs flex items-center flex-col">
+                <h2 class="mb-3 text-white text-4xl">Get Data From<br>"Linkedin"</h2>
+                <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Username" type="text" name="username" required />
+                <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Password" type="password" name="password" required />
+                <input class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Search" type="text" name="search" required />
+                <select class="placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 mt-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" name="choose">
+                    <option value="tout">Tout</option>
+                    <option value="personnes">Personnes</option>
+                    <option value="emplois">Emplois</option>
+                    <option value="entreprises">Entreprises</option>
+                    <option value="produits">Produits</option>
+                    <option value="groupes">Groupes</option>
+                    <option value="services">Services</option>
+                    <option value="evenements">Événements</option>
+                    <option value="cours">Cours</option>
+                    <option value="ecoles">Écoles</option>
+                </select>
+                <input class="w-full py-2 px-3 mt-2 bg-[#0077B7] text-white text-sm font-semibold rounded-md shadow focus:outline-none cursor-pointer" type="button" id="run" value="run"/>
+            </form>
+        </div>
+        <div class="footer text-white w-full absolute bottom-0">
+            <p class="text-center pb-2">Created by KhAiMed, Copyright 2023</p>
+        </div>
+    </div>
+    <script src="preload.js"></script>
+</body>
