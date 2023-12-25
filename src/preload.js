@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron")
+const { ipcRenderer } = require("electron");
 const shell = require("electron").shell;
 
 let facebookButton = document.getElementById("facebook_button");
@@ -24,12 +24,11 @@ youtubeButton.addEventListener("click", () => {
   shell.openExternal("https://www.youtube.com/@khaimedev");
 });
 
-document.getElementById('run').addEventListener("click", () => {
-  const inputUser = document.getElementsByName('username')[0].value
-  const inputPassword = document.getElementsByName('password')[0].value;
-  const inputSearch = document.getElementsByName('search')[0].value;
-  const selectValue = document.getElementsByName('choose')[0].value;
-  const allThem = [inputUser,inputPassword,inputSearch,selectValue];
+document.getElementById("run").addEventListener("click", () => {
+  const inputUser = document.getElementsByName("username")[0].value;
+  const inputPassword = document.getElementsByName("password")[0].value;
+  const inputSearch = document.getElementsByName("search")[0].value;
+  const selectValue = document.getElementsByName("choose")[0].value;
+  const allThem = [inputUser, inputPassword, inputSearch, selectValue];
   ipcRenderer.send("call-them", allThem);
 });
-
