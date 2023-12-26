@@ -133,9 +133,23 @@ ipcMain.on("call-them", async (event, allThem) => {
           By.xpath("/html/body/div[4]/header/div/div/div/div[1]/input")
         )
         .sendKeys(inputSearch, Key.ENTER);
-      
     }
 
+    const checkPages = async () =>{
+
+    }
+
+    const navigatePages = async () =>{
+
+    }
+
+    const uploadData = async () => {
+      
+    }
+    
+    const exitDriver = async () => {
+    await driver.quit()
+    }
     // await driver.quit();
   } catch (error) {
     console.log("the error is :", error);
