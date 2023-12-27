@@ -62,6 +62,7 @@ ipcMain.on("call-them", async (event, allThem) => {
   let inputSearch = allThem[2];
   let selectValue = allThem[3];
 
+  // Run
   try {
     driver = await new Builder()
       .forBrowser("chrome")
@@ -88,11 +89,8 @@ ipcMain.on("call-them", async (event, allThem) => {
       )
       .sendKeys(inputPassword, Key.ENTER);
 
-    // search
+    // link search
     switch (selectValue) {
-      case "tout":
-        await driver.get("https://www.linkedin.com/search/results/all/");
-        break;
       case "personnes":
         await driver.get("https://www.linkedin.com/search/results/people/");
         break;
@@ -123,33 +121,60 @@ ipcMain.on("call-them", async (event, allThem) => {
       default:
         break;
     }
+
+    // search input
     if (selectValue === "emplois") {
       await driver
         .findElement(By.css('[id^="jobs-search-box-keyword-id-"]'))
         .sendKeys(inputSearch, Key.ENTER);
     } else {
       await driver
-        .findElement(
-          By.xpath("/html/body/div[4]/header/div/div/div/div[1]/input")
-        )
+        .findElement(By.css(".search-global-typeahead__input"))
         .sendKeys(inputSearch, Key.ENTER);
     }
 
-    const checkPages = async () =>{
-
-    }
-
-    const navigatePages = async () =>{
-
-    }
-
-    const uploadData = async () => {
-      
-    }
+    // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
+    const checkPages = async () => {
+      let isValue;
     
+      if (selectValue === "emplois") {
+        let checkExist = await driver.findElement(
+          By.css(".artdeco-pagination__pages li:nth-last-child(2)")
+        );
+        const checkExistValue = await checkExist.getAttribute(
+          "data-test-pagination-page-btn"
+        );
+    
+        while (checkExistValue) {
+          isValue = parseInt(await checkExist.getText()) + 1;
+          return isValue;
+        }
+      } else if (selectValue === "services") {
+        await driver
+          .findElement(By.css(".search-results__cluster-bottom-banner"))
+          .click();
+        isValue = await driver
+          .findElement(By.css(".artdeco-pagination__pages li:last-child"))
+          .getAttribute("data-test-pagination-page-btn");
+      } else {
+        isValue = await driver
+          .findElement(By.css(".artdeco-pagination__pages li:last-child"))
+          .getAttribute("data-test-pagination-page-btn");
+      }
+    
+      return isValue.getText();
+    };
+    
+
+    checkPages();
+
+    const navigatePages = async () => {};
+
+    const uploadData = async () => {};
+
     const exitDriver = async () => {
-    await driver.quit()
-    }
+      await driver.quit();
+    };
     // await driver.quit();
   } catch (error) {
     console.log("the error is :", error);
