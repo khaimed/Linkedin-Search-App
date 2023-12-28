@@ -73,6 +73,7 @@ ipcMain.on("call-them", async (event, allThem) => {
     let url = "https://www.linkedin.com/";
     await driver.get(url);
 
+    let currentUrl = await driver.getCurrentUrl();
     // login
     await driver
       .findElement(
@@ -88,96 +89,139 @@ ipcMain.on("call-them", async (event, allThem) => {
         )
       )
       .sendKeys(inputPassword, Key.ENTER);
-
-    // link search
-    switch (selectValue) {
-      case "personnes":
-        await driver.get("https://www.linkedin.com/search/results/people/");
-        break;
-      case "emplois":
-        await driver.get("https://www.linkedin.com/jobs/search/");
-        break;
-      case "entreprises":
-        await driver.get("https://www.linkedin.com/search/results/companies/");
-        break;
-      case "produits":
-        await driver.get("https://www.linkedin.com/search/results/products/");
-        break;
-      case "groupes":
-        await driver.get("https://www.linkedin.com/search/results/groups/");
-        break;
-      case "services":
-        await driver.get("https://www.linkedin.com/search/results/services/");
-        break;
-      case "evenements":
-        await driver.get("https://www.linkedin.com/search/results/events/");
-        break;
-      case "cours":
-        await driver.get("https://www.linkedin.com/search/results/learning/");
-        break;
-      case "école":
-        await driver.get("https://www.linkedin.com/search/results/schools/");
-        break;
-      default:
-        break;
-    }
-
-    // search input
-    if (selectValue === "emplois") {
-      await driver
-        .findElement(By.css('[id^="jobs-search-box-keyword-id-"]'))
-        .sendKeys(inputSearch, Key.ENTER);
-    } else {
-      await driver
-        .findElement(By.css(".search-global-typeahead__input"))
-        .sendKeys(inputSearch, Key.ENTER);
-    }
-
-    // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
-    const checkPages = async () => {
-      let isValue;
-    
-      if (selectValue === "emplois") {
-        let checkExist = await driver.findElement(
-          By.css(".artdeco-pagination__pages li:nth-last-child(2)")
-        );
-        const checkExistValue = await checkExist.getAttribute(
-          "data-test-pagination-page-btn"
-        );
-    
-        while (checkExistValue) {
-          isValue = parseInt(await checkExist.getText()) + 1;
-          return isValue;
+    await driver.sleep(1000);
+    let runScript = true
+    while (runScript) {
+      currentUrl = await driver.getCurrentUrl();
+      if (currentUrl.includes("homepage")) {
+        // link search
+        switch (selectValue) {
+          case "personnes":
+            await driver.get("https://www.linkedin.com/search/results/people/");
+            break;
+          case "emplois":
+            await driver.get("https://www.linkedin.com/jobs/search/");
+            break;
+          case "entreprises":
+            await driver.get(
+              "https://www.linkedin.com/search/results/companies/"
+            );
+            break;
+          case "produits":
+            await driver.get(
+              "https://www.linkedin.com/search/results/products/"
+            );
+            break;
+          case "groupes":
+            await driver.get("https://www.linkedin.com/search/results/groups/");
+            break;
+          case "services":
+            await driver.get(
+              "https://www.linkedin.com/search/results/services/"
+            );
+            break;
+          case "evenements":
+            await driver.get("https://www.linkedin.com/search/results/events/");
+            break;
+          case "cours":
+            await driver.get(
+              "https://www.linkedin.com/search/results/learning/"
+            );
+            break;
+          case "école":
+            await driver.get(
+              "https://www.linkedin.com/search/results/schools/"
+            );
+            break;
+          default:
+            break;
         }
-      } else if (selectValue === "services") {
-        await driver
-          .findElement(By.css(".search-results__cluster-bottom-banner"))
-          .click();
-        isValue = await driver
-          .findElement(By.css(".artdeco-pagination__pages li:last-child"))
-          .getAttribute("data-test-pagination-page-btn");
-      } else {
-        isValue = await driver
-          .findElement(By.css(".artdeco-pagination__pages li:last-child"))
-          .getAttribute("data-test-pagination-page-btn");
+
+        // search input
+        if (selectValue === "emplois") {
+          await driver
+            .findElement(By.css('[id^="jobs-search-box-keyword-id-"]'))
+            .sendKeys(inputSearch, Key.ENTER);
+        } else {
+          await driver
+            .findElement(By.css(".search-global-typeahead__input"))
+            .sendKeys(inputSearch, Key.ENTER);
+        }
+
+        // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
+        const checkPages = async () => {
+          let isValue;
+          await driver.sleep(3000);
+          let scrollDown = await driver.executeScript(
+            "window.scrollTo(0, document.body.scrollHeight);"
+          );
+          const newUrl = await driver.getCurrentUrl();
+          if (newUrl !== currentUrl) {
+            console.log("is scroll down");
+            if (selectValue === "emplois") {
+              console.log("is emplois");
+              await driver.sleep(1000);
+              let checkExist = await driver.findElement(
+                By.xpath(
+                  '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()-1]'
+                )
+              );
+              const checkExistValue = await checkExist.getAttribute(
+                "data-test-pagination-page-btn"
+              );
+
+              while (checkExistValue) {
+                isValue = parseInt(await checkExist.getText()) + 1;
+                return isValue;
+              }
+            } else if (selectValue === "services") {
+              console.log("is services");
+              scrollDown;
+              await driver
+                .findElement(By.css(".search-results__cluster-bottom-banner"))
+                .click();
+              scrollDown;
+              isValue = await driver
+                .findElement(
+                  By.xpath(
+                    '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()]'
+                  )
+                )
+                .getAttribute("data-test-pagination-page-btn");
+            } else {
+              console.log("is all");
+              scrollDown;
+              isValue = await driver
+                .findElement(
+                  By.xpath(
+                    '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()]'
+                  )
+                )
+                .getAttribute("data-test-pagination-page-btn");
+            }
+            return isValue;
+          }
+        };
+
+        const navigatePages = async () => {
+          const numberPages = await checkPages();
+          // const numberMin = await driver.findElement(By.css(''))
+          // const numberMax = await driver.findElement(By.css(''))
+          console.log(await numberPages);
+        };
+        navigatePages();
+        const uploadData = async () => {};
+
+        const exitDriver = async () => {
+          await driver.quit();
+        };
+      } else if (currentUrl.includes("checkpoint/challenge")) {
+        await driver.sleep(3000);
       }
-    
-      return isValue.getText();
-    };
-    
-
-    checkPages();
-
-    const navigatePages = async () => {};
-
-    const uploadData = async () => {};
-
-    const exitDriver = async () => {
-      await driver.quit();
-    };
-    // await driver.quit();
+      runScript = false
+    }
   } catch (error) {
     console.log("the error is :", error);
-    await driver.quit();
+    // await driver.quit();
   }
 });
