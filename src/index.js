@@ -90,7 +90,7 @@ ipcMain.on("call-them", async (event, allThem) => {
       )
       .sendKeys(inputPassword, Key.ENTER);
     await driver.sleep(1000);
-    let runScript = true
+    let runScript = true;
     while (runScript) {
       currentUrl = await driver.getCurrentUrl();
       if (currentUrl.includes("homepage")) {
@@ -148,13 +148,13 @@ ipcMain.on("call-them", async (event, allThem) => {
             .sendKeys(inputSearch, Key.ENTER);
         }
 
+        let scrollDown = await driver.executeScript(
+          "window.scrollTo(0, document.body.scrollHeight);"
+        );
         // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
         const checkPages = async () => {
           let isValue;
           await driver.sleep(3000);
-          let scrollDown = await driver.executeScript(
-            "window.scrollTo(0, document.body.scrollHeight);"
-          );
           const newUrl = await driver.getCurrentUrl();
           if (newUrl !== currentUrl) {
             console.log("is scroll down");
@@ -205,8 +205,11 @@ ipcMain.on("call-them", async (event, allThem) => {
 
         const navigatePages = async () => {
           const numberPages = await checkPages();
-          // const numberMin = await driver.findElement(By.css(''))
-          // const numberMax = await driver.findElement(By.css(''))
+          const nextPage = await driver.findElement(By.xpath('/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/button[2]'))
+          for (let index = 0; index < numberPages.length; index++) {
+            nextPage.click()
+            scrollDown
+          }
           console.log(await numberPages);
         };
         navigatePages();
