@@ -103,25 +103,35 @@ ipcMain.on("call-them", async (event, allThem) => {
             await driver.get("https://www.linkedin.com/jobs/search/");
             break;
           case "entreprises":
-            await driver.get("https://www.linkedin.com/search/results/companies/");
+            await driver.get(
+              "https://www.linkedin.com/search/results/companies/"
+            );
             break;
           case "produits":
-            await driver.get("https://www.linkedin.com/search/results/products/");
+            await driver.get(
+              "https://www.linkedin.com/search/results/products/"
+            );
             break;
           case "groupes":
             await driver.get("https://www.linkedin.com/search/results/groups/");
             break;
           case "services":
-            await driver.get("https://www.linkedin.com/search/results/services/");
+            await driver.get(
+              "https://www.linkedin.com/search/results/services/"
+            );
             break;
           case "evenements":
             await driver.get("https://www.linkedin.com/search/results/events/");
             break;
           case "cours":
-            await driver.get("https://www.linkedin.com/search/results/learning/");
+            await driver.get(
+              "https://www.linkedin.com/search/results/learning/"
+            );
             break;
           case "école":
-            await driver.get("https://www.linkedin.com/search/results/schools/");
+            await driver.get(
+              "https://www.linkedin.com/search/results/schools/"
+            );
             break;
           default:
             break;
@@ -198,12 +208,46 @@ ipcMain.on("call-them", async (event, allThem) => {
               "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/button[2]"
             )
           );
-          let scrollDown = await driver.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+          let scrollDown = await driver.executeScript(
+            "window.scrollTo(0, document.body.scrollHeight);"
+          );
+          let data = [];
           for (let index = 0; index < numberPages.length; index++) {
             nextPage.click();
             await scrollDown;
+            let names = await driver
+              .findElements(
+                By.xpath(
+                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[2]/div/ul/li/div/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]"
+                )
+              )
+              .getText();
+            let jobs = await driver
+              .findElements(
+                By.xpath(
+                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[2]/div/ul/li/div/div/div/div[2]/div[1]/div[2]"
+                )
+              )
+              .getText();
+            let zones = await driver
+              .findElements(
+                By.xpath(
+                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[2]/div/ul/li/div/div/div/div[2]/div[1]/div[3]"
+                )
+              )
+              .getText();
+            let hisLink = await driver
+              .findElements(
+                By.xpath(
+                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[2]/div/ul/li/div/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a"
+                )
+              )
+              .getAttribute("href")
+              .getText();
+
+            data = [names, jobs, zones, hisLink]
+            console.log(data)
           }
-          console.log(await numberPages);
         };
 
         const exitDriver = async () => {
