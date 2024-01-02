@@ -7,6 +7,11 @@ let twitterButton = document.getElementById("twitter_button");
 let youtubeButton = document.getElementById("youtube_button");
 let linkedinButton = document.getElementById("linkedin_button");
 
+let inputUser = document.querySelector('input[name="username"]');
+let inputPassword = document.querySelector('input[name="password"]');
+let inputSearch = document.querySelector('input[name="search"]');
+let selectValue = document.querySelector('select[name="choose"]');
+
 // click for open browser
 facebookButton.addEventListener("click", () => {
   shell.openExternal("https://www.facebook.com/khaimedev");
@@ -24,11 +29,44 @@ youtubeButton.addEventListener("click", () => {
   shell.openExternal("https://www.youtube.com/@khaimedev");
 });
 
+const checkStart = (event) => {
+  
+}
+
+inputUser.addEventListener("keypress", function (event) {
+  if (
+    event.key === "Enter" &&
+    document.querySelector("input[type=text]").value != ""
+  ) {
+    event.preventDefault();
+    document.getElementById("run").click();
+  }
+});
+inputPassword.addEventListener("keypress", function (event) {
+  if (
+    event.key === "Enter" &&
+    document.querySelector("input[type=text]").value != ""
+  ) {
+    event.preventDefault();
+    document.getElementById("run").click();
+  }
+});
+inputSearch.addEventListener("keypress", function (event) {
+  if (
+    event.key === "Enter" &&
+    document.querySelector("input[type=text]").value != ""
+  ) {
+    event.preventDefault();
+    document.getElementById("run").click();
+  }
+});
+
 document.getElementById("run").addEventListener("click", () => {
-  const inputUser = document.getElementsByName("username")[0].value;
-  const inputPassword = document.getElementsByName("password")[0].value;
-  const inputSearch = document.getElementsByName("search")[0].value;
-  const selectValue = document.getElementsByName("choose")[0].value;
+  inputUser = inputUser.value;
+  inputPassword = inputPassword.value;
+  inputSearch = inputSearch.value;
+  selectValue = selectValue.value;
+
   const allThem = [inputUser, inputPassword, inputSearch, selectValue];
   ipcRenderer.send("call-them", allThem);
 });

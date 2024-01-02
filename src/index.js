@@ -103,35 +103,25 @@ ipcMain.on("call-them", async (event, allThem) => {
             await driver.get("https://www.linkedin.com/jobs/search/");
             break;
           case "entreprises":
-            await driver.get(
-              "https://www.linkedin.com/search/results/companies/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/companies/");
             break;
           case "produits":
-            await driver.get(
-              "https://www.linkedin.com/search/results/products/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/products/");
             break;
           case "groupes":
             await driver.get("https://www.linkedin.com/search/results/groups/");
             break;
           case "services":
-            await driver.get(
-              "https://www.linkedin.com/search/results/services/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/services/");
             break;
           case "evenements":
             await driver.get("https://www.linkedin.com/search/results/events/");
             break;
           case "cours":
-            await driver.get(
-              "https://www.linkedin.com/search/results/learning/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/learning/");
             break;
           case "école":
-            await driver.get(
-              "https://www.linkedin.com/search/results/schools/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/schools/");
             break;
           default:
             break;
@@ -148,22 +138,20 @@ ipcMain.on("call-them", async (event, allThem) => {
             .sendKeys(inputSearch, Key.ENTER);
         }
 
-        let scrollDown = await driver.executeScript(
-          "window.scrollTo(0, document.body.scrollHeight);"
-        );
         // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
         const checkPages = async () => {
           let isValue;
           await driver.sleep(3000);
+          let scrollDown = await driver.executeScript(
+            "window.scrollTo(0, document.body.scrollHeight);"
+          );
           const newUrl = await driver.getCurrentUrl();
           if (newUrl !== currentUrl) {
-            console.log("is scroll down");
             if (selectValue === "emplois") {
-              console.log("is emplois");
               await driver.sleep(1000);
               let checkExist = await driver.findElement(
                 By.xpath(
-                  '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()-1]'
+                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/ul/li[last()-1]"
                 )
               );
               const checkExistValue = await checkExist.getAttribute(
@@ -184,7 +172,7 @@ ipcMain.on("call-them", async (event, allThem) => {
               isValue = await driver
                 .findElement(
                   By.xpath(
-                    '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()]'
+                    "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/ul/li[last()]"
                   )
                 )
                 .getAttribute("data-test-pagination-page-btn");
@@ -194,7 +182,7 @@ ipcMain.on("call-them", async (event, allThem) => {
               isValue = await driver
                 .findElement(
                   By.xpath(
-                    '//*[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"][last()]'
+                    "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/ul/li[last()]"
                   )
                 )
                 .getAttribute("data-test-pagination-page-btn");
@@ -203,25 +191,30 @@ ipcMain.on("call-them", async (event, allThem) => {
           }
         };
 
-        const navigatePages = async () => {
+        const uploadData = async () => {
           const numberPages = await checkPages();
-          const nextPage = await driver.findElement(By.xpath('/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/button[2]'))
+          const nextPage = await driver.findElement(
+            By.xpath(
+              "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/button[2]"
+            )
+          );
+          let scrollDown = await driver.executeScript("window.scrollTo(0, document.body.scrollHeight);");
           for (let index = 0; index < numberPages.length; index++) {
-            nextPage.click()
-            scrollDown
+            nextPage.click();
+            await scrollDown;
           }
           console.log(await numberPages);
         };
-        navigatePages();
-        const uploadData = async () => {};
 
         const exitDriver = async () => {
           await driver.quit();
         };
+
+        uploadData();
       } else if (currentUrl.includes("checkpoint/challenge")) {
         await driver.sleep(3000);
       }
-      runScript = false
+      runScript = false;
     }
   } catch (error) {
     console.log("the error is :", error);
