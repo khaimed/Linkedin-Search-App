@@ -64,6 +64,7 @@ ipcMain.on("call-them", async (event, allThem) => {
 
   // Run
   try {
+    if(driver = await new Builder().forBrowser("chrome").build()) {await driver.quit()}
     driver = await new Builder()
       .forBrowser("chrome")
       // .setChromeOptions(options)
@@ -75,6 +76,7 @@ ipcMain.on("call-them", async (event, allThem) => {
 
     let currentUrl = await driver.getCurrentUrl();
     // login
+    // user
     await driver
       .findElement(
         By.xpath(
@@ -82,6 +84,7 @@ ipcMain.on("call-them", async (event, allThem) => {
         )
       )
       .sendKeys(inputUser);
+    // password
     await driver
       .findElement(
         By.xpath(
@@ -103,51 +106,48 @@ ipcMain.on("call-them", async (event, allThem) => {
             await driver.get("https://www.linkedin.com/jobs/search/");
             break;
           case "entreprises":
-            await driver.get(
-              "https://www.linkedin.com/search/results/companies/"
-            );
-            break;
-          case "produits":
-            await driver.get(
-              "https://www.linkedin.com/search/results/products/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/companies/");
             break;
           case "groupes":
             await driver.get("https://www.linkedin.com/search/results/groups/");
             break;
           case "services":
-            await driver.get(
-              "https://www.linkedin.com/search/results/services/"
-            );
-            break;
-          case "evenements":
-            await driver.get("https://www.linkedin.com/search/results/events/");
-            break;
-          case "cours":
-            await driver.get(
-              "https://www.linkedin.com/search/results/learning/"
-            );
-            break;
-          case "école":
-            await driver.get(
-              "https://www.linkedin.com/search/results/schools/"
-            );
+            await driver.get("https://www.linkedin.com/search/results/services/");
             break;
           default:
             break;
         }
-
+        // just for Jobs
+        const uploadDataJobs = async () => {
+          const numberElement = await driver.findElements(By.xpath('/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li'))
+          await driver.executeScript("document.querySelector('.jobs-search-results-list').scrollTop = 4600");
+          await driver.sleep(1000);
+          for (let index = 1; index < numberElement.length + 1; index++) {
+            const offreText = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a/strong`)).getText()
+            const offreLink = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a`)).getAttribute('href')
+            const offreLocalization = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[3]/ul/li`)).getText()
+            const offreDate = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/ul/li/time`)).getText()
+            const data = [offreText, offreLink, offreLocalization, offreDate]
+            console.log(data)
+            await driver.sleep(1000);
+          }
+        }
         // search input
         if (selectValue === "emplois") {
           await driver
             .findElement(By.css('[id^="jobs-search-box-keyword-id-"]'))
             .sendKeys(inputSearch, Key.ENTER);
-        } else {
+            await driver.sleep(3000);
+          await uploadDataJobs()
+          } else {
           await driver
             .findElement(By.css(".search-global-typeahead__input"))
             .sendKeys(inputSearch, Key.ENTER);
+            await driver.sleep(3000);
+            await uploadDataWithoutJobs()
         }
 
+        
         // navigation changes only between services and jobs but for services you just click on more pages which makes it easier like all pages
         const checkPages = async () => {
           let isValue;
@@ -157,22 +157,7 @@ ipcMain.on("call-them", async (event, allThem) => {
           );
           const newUrl = await driver.getCurrentUrl();
           if (newUrl !== currentUrl) {
-            if (selectValue === "emplois") {
-              await driver.sleep(1000);
-              let checkExist = await driver.findElement(
-                By.xpath(
-                  "/html/body/div[5]/div[3]/div[2]/div/div[1]/main/div/div/div[4]/div/div/ul/li[last()-1]"
-                )
-              );
-              const checkExistValue = await checkExist.getAttribute(
-                "data-test-pagination-page-btn"
-              );
-
-              while (checkExistValue) {
-                isValue = parseInt(await checkExist.getText()) + 1;
-                return isValue;
-              }
-            } else if (selectValue === "services") {
+            if (selectValue === "services") {
               console.log("is services");
               scrollDown;
               await driver
@@ -200,8 +185,8 @@ ipcMain.on("call-them", async (event, allThem) => {
             return isValue;
           }
         };
-
-        const uploadData = async () => {
+        // this for all without jobs
+        const uploadDataWitoutJobs = async () => {
           const numberPages = await checkPages();
           const nextPage = await driver.findElement(
             By.xpath(
@@ -253,12 +238,10 @@ ipcMain.on("call-them", async (event, allThem) => {
         const exitDriver = async () => {
           await driver.quit();
         };
-
-        uploadData();
+        // uploadData();
       } else if (currentUrl.includes("checkpoint/challenge")) {
         await driver.sleep(3000);
       }
-      runScript = false;
     }
   } catch (error) {
     console.log("the error is :", error);
