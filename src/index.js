@@ -119,19 +119,27 @@ ipcMain.on("call-them", async (event, allThem) => {
         }
         // just for Jobs
         const uploadDataJobs = async () => {
-          const numberElement = await driver.findElements(By.xpath('/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li'))
-          await driver.executeScript("document.querySelector('.jobs-search-results-list').scrollTop = 4600");
-          await driver.sleep(1000);
+          const numberElement = await driver.findElements(By.xpath('/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li'));
+        
+          // Create an Actions instance
+          const actions = new Actions(driver);
+        
           for (let index = 1; index < numberElement.length + 1; index++) {
-            const offreText = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a/strong`)).getText()
-            const offreLink = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a`)).getAttribute('href')
-            const offreLocalization = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[3]/ul/li`)).getText()
-            const offreDate = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/ul/li/time`)).getText()
-            const data = [offreText, offreLink, offreLocalization, offreDate]
-            console.log(data)
+            const offreTextElement = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a/strong`));
+            const offreText = await offreTextElement.getAttribute('innerText');
+            const offreLink = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[1]/a`)).getAttribute('href');
+            const offreLocalization = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/div[1]/div[2]/div[3]/ul/li`)).getText();
+            const offreDate = await driver.findElement(By.xpath(`/html/body/div[5]/div[3]/div[4]/div/div/main/div[2]/div[1]/div/ul/li[${index}]/div/div[1]/ul/li/time`)).getText();
+            const data = [offreText, offreLink, offreLocalization, offreDate];
+            console.log(data);
+        
+            // Scroll down to the next element using the Actions class
+            await actions.move({origin: offreTextElement}).sendKeys(Key.ARROW_DOWN).perform();
+        
+            // Optionally, add a delay to allow time for the scroll action to take effect
             await driver.sleep(1000);
           }
-        }
+        };
         // search input
         if (selectValue === "emplois") {
           await driver
